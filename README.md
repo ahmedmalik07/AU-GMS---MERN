@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Air University Central Gym Management System (FGMS)
 
 A comprehensive gym management system built with React.js frontend and Node.js/Express backend with MongoDB database.
