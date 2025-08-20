@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: fgms_mongodb
+    restart: unless-stopped
+    ports:
+      - '27017:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: fgms
+    volumes:
+      - mongodb_data:/data/db
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - fgms_network
+
+  backend:
+    build: ./backend
+    container_name: fgms_backend
+    restart: unless-stopped
+    ports:
+      - '4000:4000'
+    environment:
+      - MONGO_URI=mongodb://admin:password@mongodb:27017/fgms?authSource=admin
+      - PORT=4000
+      - JWT_SECRET=your-super-secret-jwt-key
+      - NODE_ENV=production
+    depends_on:
+      - mongodb
+    networks:
+      - fgms_network
+
+volumes:
+  mongodb_data:
+
+networks:
+  fgms_network:
+    driver: bridge
